@@ -17,10 +17,20 @@ def index(request, year = date.today().year, month = date.today().month):
     month_name = calendar.month_name[month]
     title = "CMMA Event Calendar - %s %s" % (month_name, year)
     cal = HTMLCalendar().formatmonth(year, month)
+    announcements = [
+        {
+            'date': '6-10-2020',
+            'announcement': "Registrations Open"
+        },
+        {
+            'date': '6-15-2020',
+            'announcement': "Website accessible online."
+        }
+    ]
     # return HttpResponse("<h1>%s</h1><p>%s</p>" % (title, cal))
     return render(request,
         'events/calendar_base.html',
-        {'title': title, 'cal': cal}
+        {'title': title, 'cal': cal, 'announcements': announcements}
     )
 
 def all_events(request):
