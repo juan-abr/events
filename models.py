@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Location(models.Model):
@@ -26,7 +27,8 @@ class Event(models.Model):
     name        = models.CharField('Event Name', max_length = 120)
     event_date  = models.DateTimeField('Event Date')
     location    = models.ForeignKey(Location, blank=True, null=True, on_delete=models.CASCADE)
-    instructor  = models.CharField(max_length = 60)
+    # instructor  = models.CharField(max_length = 60)
+    instructor  = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     attendees   = models.ManyToManyField(Attendee, blank=True)
     description = models.TextField(blank = True)
 
