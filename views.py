@@ -3,8 +3,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from datetime import date
 import calendar
 from calendar import HTMLCalendar
+from django.template.response import TemplateResponse
 
-from .models import Event
+import csv
+from .models import Event, Location
 from .forms import LocationForm
 
 # Create your views here.
@@ -12,7 +14,12 @@ def index(request, year = date.today().year, month = date.today().month):
     # t = date.today()
     # month = date.strftime(t, '%b')
     # year = t.year
-    assert False
+    # usr = request.user
+    # ses = request.session
+    # path = request.path
+    # path_info = request.path_info
+    # headers = request.headers
+    # assert False
     year = int(year)
     month = int(month)
     if year < 2000 or year > 2099: year = date.today().year
@@ -30,7 +37,8 @@ def index(request, year = date.today().year, month = date.today().month):
         }
     ]
     # return HttpResponse("<h1>%s</h1><p>%s</p>" % (title, cal))
-    return render(request,
+    # return render(request,
+    return TemplateResponse(request,
         'events/calendar_base.html',
         {'title': title, 'cal': cal, 'announcements': announcements}
     )
@@ -54,3 +62,24 @@ def add_location(request):
         if 'submitted' in request.GET:
             submitted = True
     return render(request, 'events/add_location.html', {'form': form, 'submitted': submitted})
+
+def gen_text(request):
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="bart.txt"'
+    lines = [
+        "Test line 1.\n",
+        "Test line 2.\n",
+        "Test line 3.\n"
+    ]
+    response.writelines(lines)
+    return response
+
+def gen_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="locations.csv"'
+    writer = csv.writer(response)
+    locations = Location.locations.all()
+    writer.writerow(['Location Name', 'Address', 'Phone', 'Email'])
+    for location in locations:
+        writer.writerow([location.name, location.address, location.phone, location.email_address])
+    return response

@@ -13,10 +13,13 @@ class Location(models.Model):
     phone           = models.CharField('Contact Phone', max_length = 20, blank = True)
     web             = models.URLField('Web Address', blank = True)
     email_address   = models.EmailField('Email Address', blank = True)
+
+    locations = models.Manager()
     local_locations = LocationManager()
 
     def __str__(self):
         return self.name
+
 
 
 class Attendee(models.Model):
